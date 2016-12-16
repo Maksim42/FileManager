@@ -145,16 +145,22 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ComboBoxControl.h" />
     <ClInclude Include="Control.h" />
     <ClInclude Include="FileManager.h" />
+    <ClInclude Include="FileSystem.h" />
+    <ClInclude Include="LabelControl.h" />
     <ClInclude Include="ListViewControl.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ComboBoxControl.cpp" />
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="FileManager.cpp" />
+    <ClCompile Include="FileSystem.cpp" />
+    <ClCompile Include="LabelControl.cpp" />
     <ClCompile Include="ListViewControl.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

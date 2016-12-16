@@ -10,7 +10,7 @@ ListViewControl::ListViewControl(HWND hWnd, HINSTANCE hInst, POINT position, int
 		(position.x), (position.y), w, h, hWnd,
 		(HMENU) id, hInst, NULL);
 
-	ListView_SetExtendedListViewStyle(hList, LVS_EX_FULLROWSELECT);
+	ListView_SetExtendedListViewStyle(hList, LVS_EX_FULLROWSELECT | LVS_EDITLABELS);
 
 	LPWSTR columns[] = { L"Name", L"Type", L"?" };
 	InitColumn(columns, 3);
@@ -31,11 +31,11 @@ void ListViewControl::InitColumn(LPWSTR items[], int count) {
 
 	LVCOLUMN lvc;
 	lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
-	lvc.cx = 75;
 	lvc.fmt = LVCFMT_LEFT;
 
 	for (int i = 0; i < count; i++) {
 		lvc.iSubItem = i;
+		lvc.cx = (i == 0) ? 150 : 100;
 
 		int length = wcslen(items[i]) + 1;
 		lvc.pszText = new TCHAR[length];
@@ -63,7 +63,7 @@ void ListViewControl::Refresh() {
 	this->ClearView();
 
 	LVITEM lvI;
-	lvI.mask = LVIF_TEXT;//| LVIF_IMAGE | LVIF_STATE;
+	lvI.mask = LVIF_IMAGE | LVIF_TEXT;
 	lvI.stateMask = 0;
 	lvI.state = 0;
 
@@ -71,13 +71,13 @@ void ListViewControl::Refresh() {
 		lvI.iItem = j;
 
 		lvI.iSubItem = 0;
-		//lvI.iImage = 0;
+		lvI.iImage = 0;
 		lvI.pszText = listItems[0][j];
 		ListView_InsertItem(hList, &lvI);
 
 		for (int i = 1; i < columnCount; i++) {
 			lvI.iSubItem = i;
-			//lvI.iImage = 0;
+			lvI.iImage = 0;
 			lvI.pszText = listItems[i][j];
 
 			ListView_SetItem(hList, &lvI);
@@ -94,13 +94,13 @@ void ListViewControl::ClearData() {
 		listItems[i].clear();
 	}
 
+	iconNumber.clear();
+
 	itemCount = 0;
 }
 
 void ListViewControl::ClearView() {
-	for (int i = 0; i <= itemCount; i++) {
-		ListView_DeleteItem(hList, 0);
-	}
+	ListView_DeleteAllItems(hList);
 }
 
 int ListViewControl::GetSelectedItems(LPWSTR items[], int length) {
@@ -124,4 +124,20 @@ int ListViewControl::GetSelectedItems(LPWSTR items[], int length) {
 void ListViewControl::Clear() {
 	this->ClearView();
 	this->ClearData();
+}
+
+void ListViewControl::StartEdit() {
+	hEdit = ListView_GetEditControl(hList);
+}
+
+void ListViewControl::StopEdit() {
+	int editNum = ListView_GetNextItem(hList, -1, LVNI_FOCUSED);
+
+	LPWSTR newName = new TCHAR[255];
+	GetWindowText(hEdit, newName, sizeof(newName));
+
+	delete[] listItems[0][editNum];
+	listItems[0][editNum] = newName;
+
+	Refresh();
 }

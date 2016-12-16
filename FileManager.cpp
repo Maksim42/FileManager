@@ -98,8 +98,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Store instance handle in our global variable
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+   HWND hWnd = CreateWindowW(szWindowClass, szTitle, (WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME)
+			   & ~WS_MAXIMIZEBOX, CW_USEDEFAULT, 0, 900, 600,
+			   nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -136,6 +137,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
+
+			case LeftComboBox:
+				switch (HIWORD(wParam)) {
+				case CBN_SELENDOK:
+					control->LeftComboBoxSelect(message, wParam);
+					//MessageBox(hWnd, L"ComboBox", L"Click left", MB_OK | MB_ICONWARNING);
+					break;
+				}
+				break;
+
+			case RightComboBox:
+				switch (HIWORD(wParam)) {
+				case CBN_SELENDOK:
+					control->RightComboBoxSelect(message, wParam);
+					//MessageBox(hWnd, L"ComboBox", L"Click right", MB_OK | MB_ICONWARNING);
+					break;
+				}
+				break;
+
             case IDM_EXIT:
                 DestroyWindow(hWnd);
                 break;
@@ -149,35 +169,39 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		LPNMHDR lpnmHdr = (LPNMHDR)lParam;
 		LPNMLISTVIEW pnmLV = (LPNMLISTVIEW)lParam;
 
-		if (lpnmHdr->code == NM_CLICK) {
-			if (lpnmHdr->idFrom == 1) {
-				/*LPWSTR buf1 = new TCHAR[256];
-				ListView_GetItemText(lpnmHdr->hwndFrom, pnmLV->iItem, 0, buf1, MAX_PATH);*/
+		switch (lpnmHdr->idFrom)
+		{
+		case LeftListView:
+		case RightListViev:
+			switch (lpnmHdr->code) {
+			case LVN_COLUMNCLICK:
+				//MessageBox(hWnd, L"Column Click", L"Click left", MB_OK | MB_ICONWARNING);
+				//pnmLV->iSubItem
+				break;
 
-				//MessageBox(hWnd, buf1, L"Click left", MB_OK | MB_ICONWARNING);
+			case LVN_BEGINLABELEDIT:
+				//MessageBox(hWnd, L"Begin edit", L"Click left", MB_OK | MB_ICONWARNING);
+				//control->BeginEditHandler(lpnmHdr);
+				break;
 
+			case LVN_ENDLABELEDIT:
+				//MessageBox(hWnd, L"End edit", L"Click left", MB_OK | MB_ICONWARNING);
+				//control->EndEditHandler(lpnmHdr);
+				break;
+
+			case NM_SETFOCUS:
+				MessageBox(hWnd, L"Focused", L"Click left", MB_OK | MB_ICONWARNING);
+				break;
+
+			case NM_CLICK:
+				break;
 			}
-			else {
-				/*LPWSTR *ar = new LPWSTR[5];
-				for (int i = 0; i < 5; i++) {
-					ar[i] = new TCHAR[MAX_STR_BLOCKREASON];
-				}
-
-				int res = list1->GetSelectedItems(ar, 5);
-
-				if (res) {
-					MessageBox(hWnd, ar[res - 1], L"Click right", MB_OK | MB_ICONWARNING);
-				}
-
-				list1->Clear();
-
-				for (int i = 0; i < 5; i++)
-					delete[] ar[i];
-				delete[] ar;*/
-			}
-
-
+			break;
+		default:
+			break;
 		}
+
+		
 	}
 	break;
 
@@ -185,28 +209,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
             EndPaint(hWnd, &ps);
         }
         break;
 
 	case WM_CREATE: {
-		/*POINT p1;
-
-		p1.x = 0;
-		p1.y = 0;
-		
-		list1 = new ListViewControl(hWnd, hInst, p1, 200, 300, 1);
-		
-		p1.x = 500;
-		
-		list2 = new ListViewControl(hWnd, hInst, p1, 200, 300, 2);*/
-
 		control = new Control(hWnd, hInst);
+		control->InitializeComponent();
 	}
 	break;
 
     case WM_DESTROY:
+		delete control;
         PostQuitMessage(0);
         break;
     default:
