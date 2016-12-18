@@ -13,7 +13,7 @@ public:
 	bool FileCheck(LPWSTR name);
 	bool OpenFile(LPWSTR name);
 	bool OpenDir(ListViewControl *list, LabelControl *label, LPWSTR name, LPWSTR path);
-	bool ParentDir(LPWSTR path, LPWSTR newPath);
+	bool ParentDir(LPWSTR path);
 	BOOL InitListViewImageLists(ListViewControl * listView, int size, LPWSTR rootDir);
 };
 

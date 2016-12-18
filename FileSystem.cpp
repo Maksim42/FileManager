@@ -32,10 +32,14 @@ bool FileSystem::FindFile(ListViewControl *list, LPWSTR dir)
 	}
 	else
 	{
+		wcscpy_s(list->path, MAX_PATH, dir);
+
 		do
 		{
-			wcscpy_s(list->path, MAX_PATH, dir);
-			
+			if (wcscmp(FindFileData.cFileName, L".") == 0) {
+				continue;
+			}
+
 			LPWSTR *item = new LPWSTR[list->columnCount];
 
 			LPWSTR fullPath = new TCHAR[MAX_PATH];
@@ -115,7 +119,10 @@ bool FileSystem::OpenDir(ListViewControl *list, LabelControl *label, LPWSTR name
 	}
 
 	if (wcscmp(name, L"..") == 0) {
-		MessageBox(0, L"Parent Folber", L"BreakComander", MB_OK | MB_ICONWARNING);
+		//MessageBox(0, L"Parent Folber", L"BreakComander", MB_OK | MB_ICONWARNING);
+		ParentDir(path);
+		FindFile(list, path);
+		label->SetText(path);
 		return result;
 	}
 
@@ -135,10 +142,24 @@ bool FileSystem::OpenDir(ListViewControl *list, LabelControl *label, LPWSTR name
 	return result;
 }
 
-bool ParentDir(LPWSTR path, LPWSTR newPath) {
+bool FileSystem::ParentDir(LPWSTR path) {
+	int sleshCount = 0;
+
 	for (int i = wcslen(path) - 1; i > 0; i--) {
-		// child dir cut
+		if (path[i] == '\\') {
+			sleshCount++;
+		}
+		if (sleshCount == 3) {
+			path[i + 1] = '\0';
+			break;
+		}
 	}
+
+	if (sleshCount != 3) {
+		return false;
+	}
+
+	return true;
 }
 
 BOOL FileSystem::InitListViewImageLists(ListViewControl *listView, int size, LPWSTR rootDir)
