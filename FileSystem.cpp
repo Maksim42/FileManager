@@ -47,11 +47,6 @@ bool FileSystem::FindFile(ListViewControl *list, LPWSTR dir)
 				item[1] = L"File"; 
 			} else {
 				item[1] = L"Directory";
-
-				/*wchar_t buffer[256];
-				std::swprintf(buffer, sizeof(buffer) / sizeof(*buffer),
-							  L"%s %d", fullPath, GetFileAttributes(FindFileData.cFileName));
-				item[1] = buffer;*/
 			}
 
 			item[0] = FindFileData.cFileName;
@@ -80,10 +75,13 @@ bool FileSystem::Open(ListViewControl *list, LPNMLISTVIEW pnmLV, LabelControl *l
 	wcscpy_s(fullPath, MAX_PATH, list->path);
 	wcscat_s(fullPath, MAX_PATH, itemName);
 
-	if (FileCheck(itemName)) {
+	if (FileCheck(fullPath)) {
+		//MessageBox(0, L"File", L"BreakComander", MB_OK | MB_ICONWARNING);
 		OpenFile(fullPath);
 	} else {
-
+		//MessageBox(0, L"Dirictory", L"BreakComander", MB_OK | MB_ICONWARNING);
+		wcscat_s(fullPath, MAX_PATH, L"\\");
+		OpenDir(list, label, itemName, fullPath);
 	}
 
 	delete[] itemName;
@@ -94,13 +92,53 @@ bool FileSystem::Open(ListViewControl *list, LPNMLISTVIEW pnmLV, LabelControl *l
 
 bool FileSystem::FileCheck(LPWSTR name)
 {
-	return true;
+	if ((FILE_ATTRIBUTE_DIRECTORY & GetFileAttributes(name))
+		!= FILE_ATTRIBUTE_DIRECTORY) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 bool FileSystem::OpenFile(LPWSTR name)
 {
-	MessageBox(0, name, L"BreakComander", MB_OK | MB_ICONWARNING);
+	HINSTANCE result = ShellExecute(0, L"open", name, NULL, NULL, SW_SHOWNORMAL);
 	return true;
+}
+
+bool FileSystem::OpenDir(ListViewControl *list, LabelControl *label, LPWSTR name, LPWSTR path) {
+	bool result = true;
+	
+	if (wcscmp(name, L".") == 0) {
+		//FindFile(list, list->path);
+		return result;
+	}
+
+	if (wcscmp(name, L"..") == 0) {
+		MessageBox(0, L"Parent Folber", L"BreakComander", MB_OK | MB_ICONWARNING);
+		return result;
+	}
+
+	LPWSTR oldPath = new TCHAR[MAX_PATH];
+	wcscpy_s(oldPath, MAX_PATH, list->path);
+
+	bool success = FindFile(list, path);
+	if (success) {
+		label->SetText(path);
+	} else {
+		MessageBox(0, L"Error", L"BreakComander", MB_OK | MB_ICONWARNING);
+		FindFile(list, oldPath);
+		result = false;
+	}
+
+	delete[] oldPath;
+	return result;
+}
+
+bool ParentDir(LPWSTR path, LPWSTR newPath) {
+	for (int i = wcslen(path) - 1; i > 0; i--) {
+		// child dir cut
+	}
 }
 
 BOOL FileSystem::InitListViewImageLists(ListViewControl *listView, int size, LPWSTR rootDir)
