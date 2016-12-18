@@ -5,6 +5,7 @@
 Control::Control(HWND hWnd, HINSTANCE hInst) {
 	hMainWindow = hWnd;
 	hInstance = hInst;
+	focus = false;
 }
 
 
@@ -54,11 +55,11 @@ void Control::InitializeComponent() {
 	comboLeft->SelectItem(0);
 	comboRight->SelectItem(0);
 
-	labelLeft->SetText(fileSystem->path1);
-	labelRight->SetText(fileSystem->path2);
+	fileSystem->FindFile(listLeft, listLeft->path);
+	fileSystem->FindFile(listRight, listRight->path);
 
-	fileSystem->FindFile(listLeft, fileSystem->path1, 1);
-	fileSystem->FindFile(listRight, fileSystem->path2, 2);
+	labelLeft->SetText(listLeft->path);
+	labelRight->SetText(listRight->path);
 }
 
 void Control::BeginEditHandler(LPNMHDR lpnmhdr) {
@@ -85,37 +86,63 @@ void Control::EndEditHandler(LPNMHDR lpnmhdr) {
 	}
 }
 
-void Control::LeftComboBoxSelect(UINT message, WPARAM wParam) {
+void Control::LeftComboBoxSelect() {
 	LPWSTR newPath = comboLeft->GetSelected();
-	labelLeft->SetText(newPath);
 
 	LPWSTR oldPath = new TCHAR[MAX_PATH];
-	wcscpy_s(oldPath, MAX_PATH, fileSystem->path1);
+	wcscpy_s(oldPath, MAX_PATH, listLeft->path);
 
-	bool success = fileSystem->FindFile(listLeft, newPath, 1);
-	if (!success) {
+	bool success = fileSystem->FindFile(listLeft, newPath);
+	if (success) {
+		labelLeft->SetText(newPath);
+	} else {
 		MessageBox(0, L"Error", L"BreakComander", MB_OK | MB_ICONWARNING);
-		fileSystem->FindFile(listLeft, oldPath, 1);
-		labelLeft->SetText(oldPath);
+		fileSystem->FindFile(listLeft, oldPath);
 	}
 	delete[] oldPath;
 }
 
-void Control::RightComboBoxSelect(UINT message, WPARAM wParam) {
+void Control::RightComboBoxSelect() {
 	LPWSTR newPath = comboRight->GetSelected();
-	labelRight->SetText(newPath);
 
 	LPWSTR oldPath = new TCHAR[MAX_PATH];
-	wcscpy_s(oldPath, MAX_PATH, fileSystem->path2);
+	wcscpy_s(oldPath, MAX_PATH, listRight->path);
 
-	bool success = fileSystem->FindFile(listRight, newPath, 2);
-	if (!success) {
+	bool success = fileSystem->FindFile(listRight, newPath);
+	if (success) {
+		labelRight->SetText(newPath);
+	} else {
 		MessageBox(0, L"Error", L"BreakComander", MB_OK | MB_ICONWARNING);
-		fileSystem->FindFile(listRight, oldPath, 2);
-		labelRight->SetText(oldPath);
+		fileSystem->FindFile(listRight, oldPath);
 	}
 	delete[] oldPath;
 
+}
+
+void Control::SetListFocus(LPNMHDR lpnmHdr) {
+	switch (lpnmHdr->idFrom)
+	{
+	case LeftListView:
+		focus = false;
+		break;
+	case RightListViev:
+		focus = true;
+		break;
+	}
+}
+
+void Control::OpenItem(LPNMHDR lpnmHdr, LPNMLISTVIEW pnmLV) {
+	ListViewControl *list;
+	LabelControl *label;
+	if (lpnmHdr->idFrom == LeftListView) {
+		list = listLeft;
+		label = labelLeft;
+	} else {
+		list = listRight;
+		label = labelRight;
+	}
+
+	fileSystem->Open(list, pnmLV, label);
 }
 
 

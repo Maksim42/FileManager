@@ -141,7 +141,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case LeftComboBox:
 				switch (HIWORD(wParam)) {
 				case CBN_SELENDOK:
-					control->LeftComboBoxSelect();
+					control->LeftComboBoxSelect(message, wParam);
 					//MessageBox(hWnd, L"ComboBox", L"Click left", MB_OK | MB_ICONWARNING);
 					break;
 				}
@@ -150,7 +150,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case RightComboBox:
 				switch (HIWORD(wParam)) {
 				case CBN_SELENDOK:
-					control->RightComboBoxSelect();
+					control->RightComboBoxSelect(message, wParam);
 					//MessageBox(hWnd, L"ComboBox", L"Click right", MB_OK | MB_ICONWARNING);
 					break;
 				}
@@ -194,8 +194,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 
 		case NM_DBLCLK:
-			//MessageBox(hWnd, L"DBclick", L"Click left", MB_OK | MB_ICONWARNING);
-			control->OpenItem(lpnmHdr, pnmLV);
+			MessageBox(hWnd, L"DBclick", L"Click left", MB_OK | MB_ICONWARNING);
 			break;
 		}
 	}

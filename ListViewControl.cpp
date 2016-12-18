@@ -14,10 +14,14 @@ ListViewControl::ListViewControl(HWND hWnd, HINSTANCE hInst, POINT position, int
 
 	LPWSTR columns[] = { L"Name", L"Type", L"?" };
 	InitColumn(columns, 3);
+
+	path = new TCHAR[MAX_PATH];
+	wcscpy_s(path, MAX_PATH, L"C:\\");
 }
 
 
 ListViewControl::~ListViewControl() {
+	delete[] path;
 	DestroyWindow(hList);
 }
 
@@ -28,7 +32,6 @@ void ListViewControl::InitColumn(LPWSTR items[], int count) {
 		listItems.push_back(std::vector<LPWSTR>());
 	}
 	
-
 	LVCOLUMN lvc;
 	lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 	lvc.fmt = LVCFMT_LEFT;
@@ -122,8 +125,12 @@ int ListViewControl::GetSelectedItems(LPWSTR items[], int length) {
 }
 
 void ListViewControl::Clear() {
-	this->ClearView();
-	this->ClearData();
+	ClearView();
+	ClearData();
+}
+
+void ListViewControl::GetItemText(int itemNum, LPWSTR text) {
+	ListView_GetItemText(hList, itemNum, 0, text, MAX_STR_BLOCKREASON);
 }
 
 void ListViewControl::StartEdit() {

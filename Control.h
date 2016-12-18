@@ -19,10 +19,10 @@ public:
 	void InitializeComponent();
 	void BeginEditHandler(LPNMHDR lpnmhdr);
 	void EndEditHandler(LPNMHDR lpnmhdr);
-	void RightComboBoxSelect(UINT message, WPARAM wParam);
-	void LeftComboBoxSelect(UINT message, WPARAM wParam);
-
-
+	void RightComboBoxSelect();
+	void LeftComboBoxSelect();
+	void SetListFocus(LPNMHDR lpnmHdr);
+	void OpenItem(LPNMHDR lpnmHdr, LPNMLISTVIEW pnmLV);
 
 private:
 	FileSystem *fileSystem;
@@ -34,5 +34,6 @@ private:
 	LabelControl *labelRight;
 	ComboBoxControl *comboLeft;
 	ComboBoxControl *comboRight;
+	bool focus;
 };
 

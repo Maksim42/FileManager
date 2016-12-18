@@ -2,17 +2,17 @@
 #include "FileSystem.h"
 
 FileSystem::FileSystem() {
-	path1 = new TCHAR[MAX_PATH];
+	/*path1 = new TCHAR[MAX_PATH];
 	path2 = new TCHAR[MAX_PATH];
 	wcscpy_s(path1, MAX_PATH, L"C:\\");
-	wcscpy_s(path2, MAX_PATH, L"C:\\");
+	wcscpy_s(path2, MAX_PATH, L"C:\\");*/
 }
 
 
 FileSystem::~FileSystem() {
 }
 
-bool FileSystem::FindFile(ListViewControl *list, LPWSTR dir, int pathNum) //
+bool FileSystem::FindFile(ListViewControl *list, LPWSTR dir)
 {
 	list->Clear();
 	int i = 0;
@@ -34,28 +34,30 @@ bool FileSystem::FindFile(ListViewControl *list, LPWSTR dir, int pathNum) //
 	{
 		do
 		{
-			if (pathNum = 1) {
-				wcscpy_s(path1, MAX_PATH, dir);
-			} else {
-				wcscpy_s(path2, MAX_PATH, dir);
-			}
-			LPWSTR *item = new LPWSTR[3];
+			wcscpy_s(list->path, MAX_PATH, dir);
+			
+			LPWSTR *item = new LPWSTR[list->columnCount];
 
-			if ((FILE_ATTRIBUTE_DIRECTORY & GetFileAttributes(FindFileData.cFileName))
+			LPWSTR fullPath = new TCHAR[MAX_PATH];
+			wcscpy_s(fullPath, MAX_PATH, dir);
+			wcscat_s(fullPath, MAX_PATH, FindFileData.cFileName);
+
+			if ((FILE_ATTRIBUTE_DIRECTORY & GetFileAttributes(fullPath))
 				 != FILE_ATTRIBUTE_DIRECTORY) {
-				item[1] = L"Directory";
+				item[1] = L"File"; 
 			} else {
-				item[1] = L"File";
+				item[1] = L"Directory";
 
-				wchar_t buffer[256];
+				/*wchar_t buffer[256];
 				std::swprintf(buffer, sizeof(buffer) / sizeof(*buffer),
-							  L"%d", GetFileAttributes(FindFileData.cFileName));
-				item[1] = buffer;
+							  L"%s %d", fullPath, GetFileAttributes(FindFileData.cFileName));
+				item[1] = buffer;*/
 			}
 
 			item[0] = FindFileData.cFileName;
 			item[2] = L"None";
 			list->AddItem(item);
+
 			delete[] item;
 
 			i++;
@@ -67,6 +69,37 @@ bool FileSystem::FindFile(ListViewControl *list, LPWSTR dir, int pathNum) //
 
 	list->Refresh();
 
+	return true;
+}
+
+bool FileSystem::Open(ListViewControl *list, LPNMLISTVIEW pnmLV, LabelControl *label) {
+	LPWSTR itemName = new TCHAR[MAX_PATH];
+	list->GetItemText(pnmLV->iItem, itemName);
+
+	LPWSTR fullPath = new TCHAR[MAX_PATH];
+	wcscpy_s(fullPath, MAX_PATH, list->path);
+	wcscat_s(fullPath, MAX_PATH, itemName);
+
+	if (FileCheck(itemName)) {
+		OpenFile(fullPath);
+	} else {
+
+	}
+
+	delete[] itemName;
+	delete[] fullPath;
+
+	return true;
+}
+
+bool FileSystem::FileCheck(LPWSTR name)
+{
+	return true;
+}
+
+bool FileSystem::OpenFile(LPWSTR name)
+{
+	MessageBox(0, name, L"BreakComander", MB_OK | MB_ICONWARNING);
 	return true;
 }
 
