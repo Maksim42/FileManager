@@ -13,7 +13,7 @@ Control::~Control() {
 	delete listLeft;
 	delete labelRight;
 	delete labelLeft;
-	delete labelRight;
+	//delete labelRight;
 	delete comboLeft;
 	delete comboRight;
 }
@@ -36,7 +36,7 @@ void Control::InitializeComponent() {
 	labelLeft = new LabelControl(hMainWindow, hInstance, p, w - 100, 20, LeftLabel);
 	p.x = w + 5;
 	labelRight = new LabelControl(hMainWindow, hInstance, p, w - 100, 20, RightLabel);
-
+	
 	p.x = w - 100 + 3;
 	comboLeft = new ComboBoxControl(hMainWindow, hInstance, p, 100, 100, LeftComboBox);
 	p.x = w + w - 100 + 3;
