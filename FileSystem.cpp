@@ -46,17 +46,26 @@ bool FileSystem::FindFile(ListViewControl *list, LPWSTR dir)
 			wcscpy_s(fullPath, MAX_PATH, dir);
 			wcscat_s(fullPath, MAX_PATH, FindFileData.cFileName);
 
+			bool file = false;
 			if ((FILE_ATTRIBUTE_DIRECTORY & GetFileAttributes(fullPath))
 				 != FILE_ATTRIBUTE_DIRECTORY) {
 				item[1] = L"File"; 
+				item[2] = new TCHAR[MAX_PATH];
+				int size = (FindFileData.nFileSizeHigh * (MAXWORD + 1)) + FindFileData.nFileSizeLow;
+				swprintf(item[2], MAX_PATH, L"%db", size);
+				file = true;
 			} else {
 				item[1] = L"Directory";
+				item[2] = L"";
 			}
 
 			item[0] = FindFileData.cFileName;
-			item[2] = L"None";
+
 			list->AddItem(item);
 
+			if (file) {
+				delete[] item[2];
+			}
 			delete[] item;
 
 			i++;
@@ -118,7 +127,6 @@ bool FileSystem::OpenDir(ListViewControl *list, LabelControl *label, LPWSTR name
 	bool result = true;
 	
 	if (wcscmp(name, L".") == 0) {
-		//FindFile(list, list->path);
 		return result;
 	}
 
@@ -173,7 +181,6 @@ bool FileSystem::CopySelectedFiles(ListViewControl * from, ListViewControl * des
 	std::vector<LPWSTR> selectedList = from->GetSelectedItems();
 	
 	for (int i = 0; i < selectedList.size(); i++) {
-		//MessageBox(0, selectedList[i], L"BreakComander", MB_OK | MB_ICONWARNING);
 		wcscpy_s(fromPath, MAX_PATH, from->path);
 		wcscat_s(fromPath, MAX_PATH, selectedList[i]);
 		wcscpy_s(destinationPath, MAX_PATH, destination->path);
@@ -195,7 +202,6 @@ bool FileSystem::DeleteSelectedFiles(ListViewControl * from) {
 	std::vector<LPWSTR> selectedList = from->GetSelectedItems();
 
 	for (int i = 0; i < selectedList.size(); i++) {
-		//MessageBox(0, selectedList[i], L"BreakComander", MB_OK | MB_ICONWARNING);
 		wcscpy_s(fromPath, MAX_PATH, from->path);
 		wcscat_s(fromPath, MAX_PATH, selectedList[i]);
 

@@ -12,7 +12,7 @@ ListViewControl::ListViewControl(HWND hWnd, HINSTANCE hInst, POINT position, int
 
 	ListView_SetExtendedListViewStyle(hList, LVS_EX_FULLROWSELECT | LVS_EDITLABELS);
 
-	LPWSTR columns[] = { L"Name", L"Type", L"?" };
+	LPWSTR columns[] = { L"Name", L"Type", L"Size" };
 	InitColumn(columns, 3);
 
 	path = new TCHAR[MAX_PATH];
