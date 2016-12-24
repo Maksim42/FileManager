@@ -96,12 +96,16 @@ bool FileSystem::Open(ListViewControl *list, LPNMLISTVIEW pnmLV, LabelControl *l
 
 bool FileSystem::FileCheck(LPWSTR name)
 {
+	bool result = true;
+
 	if ((FILE_ATTRIBUTE_DIRECTORY & GetFileAttributes(name))
 		!= FILE_ATTRIBUTE_DIRECTORY) {
-		return true;
+		result =  true;
 	} else {
-		return false;
+		result =  false;
 	}
+
+	return result;
 }
 
 bool FileSystem::OpenFile(LPWSTR name)
@@ -157,6 +161,47 @@ bool FileSystem::ParentDir(LPWSTR path) {
 
 	if (sleshCount != 3) {
 		return false;
+	}
+
+	return true;
+}
+
+bool FileSystem::CopySelectedFiles(ListViewControl * from, ListViewControl * destination)
+{
+	LPWSTR fromPath = new TCHAR[MAX_PATH];
+	LPWSTR destinationPath = new TCHAR[MAX_PATH];
+	std::vector<LPWSTR> selectedList = from->GetSelectedItems();
+	
+	for (int i = 0; i < selectedList.size(); i++) {
+		//MessageBox(0, selectedList[i], L"BreakComander", MB_OK | MB_ICONWARNING);
+		wcscpy_s(fromPath, MAX_PATH, from->path);
+		wcscat_s(fromPath, MAX_PATH, selectedList[i]);
+		wcscpy_s(destinationPath, MAX_PATH, destination->path);
+		wcscat_s(destinationPath, MAX_PATH, selectedList[i]);
+		
+		CopyFile(fromPath, destinationPath, false);
+
+		delete[] selectedList[i];
+	}
+
+	delete[] fromPath;
+	delete[] destinationPath;
+
+	return true;
+}
+
+bool FileSystem::DeleteSelectedFiles(ListViewControl * from) {
+	LPWSTR fromPath = new TCHAR[MAX_PATH];
+	std::vector<LPWSTR> selectedList = from->GetSelectedItems();
+
+	for (int i = 0; i < selectedList.size(); i++) {
+		//MessageBox(0, selectedList[i], L"BreakComander", MB_OK | MB_ICONWARNING);
+		wcscpy_s(fromPath, MAX_PATH, from->path);
+		wcscat_s(fromPath, MAX_PATH, selectedList[i]);
+
+		DeleteFile(fromPath);
+
+		delete[] selectedList[i];
 	}
 
 	return true;

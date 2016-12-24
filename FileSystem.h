@@ -14,6 +14,8 @@ public:
 	bool OpenFile(LPWSTR name);
 	bool OpenDir(ListViewControl *list, LabelControl *label, LPWSTR name, LPWSTR path);
 	bool ParentDir(LPWSTR path);
+	bool CopySelectedFiles(ListViewControl *from, ListViewControl *to);
+	bool DeleteSelectedFiles(ListViewControl *from);
 	BOOL InitListViewImageLists(ListViewControl * listView, int size, LPWSTR rootDir);
 };
 

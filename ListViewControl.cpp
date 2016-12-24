@@ -106,22 +106,20 @@ void ListViewControl::ClearView() {
 	ListView_DeleteAllItems(hList);
 }
 
-int ListViewControl::GetSelectedItems(LPWSTR items[], int length) {
-	int resultLength = 0;
+std::vector<LPWSTR> ListViewControl::GetSelectedItems() {
+	std::vector<LPWSTR> result;
 
 	int position = ListView_GetNextItem(hList, -1, LVNI_SELECTED);
-	while ((position != -1) && (resultLength < length)) {
+	while (position != -1) {
 		LPWSTR bufer = new TCHAR[MAX_STR_BLOCKREASON];
 		ListView_GetItemText(hList, position, 0, bufer, MAX_STR_BLOCKREASON);
 		
-		wcscpy_s(items[resultLength], MAX_STR_BLOCKREASON, bufer);
-		delete[] bufer;
-		resultLength++;
+		result.push_back(bufer);
 
 		position = ListView_GetNextItem(hList, position, LVNI_SELECTED);
 	}
 
-	return resultLength;
+	return result;
 }
 
 void ListViewControl::Clear() {

@@ -12,7 +12,7 @@ public:
 	~ListViewControl();
 	void AddItem(LPWSTR items[]);
 	void Refresh();
-	int GetSelectedItems(LPWSTR items[], int length);
+	std::vector<LPWSTR> GetSelectedItems();
 	void Clear();
 	void GetItemText(int itemNum, LPWSTR text);
 	void StartEdit();

@@ -156,6 +156,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 				break;
 
+			case ID_COPY:
+				//MessageBox(hWnd, L"Copy Hotkey", L"BreakComander", MB_OK | MB_ICONWARNING);
+				control->CopyFiles();
+				break;
+
+			case ID_DELETE:
+				control->DeleteFiles();
+				break;
+
             case IDM_EXIT:
                 DestroyWindow(hWnd);
                 break;
@@ -211,7 +220,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_CREATE: {
 		control = new Control(hWnd, hInst);
-		control->InitializeComponent();
 	}
 	break;
 

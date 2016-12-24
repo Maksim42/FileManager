@@ -23,6 +23,8 @@ public:
 	void LeftComboBoxSelect();
 	void SetListFocus(LPNMHDR lpnmHdr);
 	void OpenItem(LPNMHDR lpnmHdr, LPNMLISTVIEW pnmLV);
+	void CopyFiles();
+	void DeleteFiles();
 
 private:
 	FileSystem *fileSystem;

@@ -6,6 +6,8 @@ Control::Control(HWND hWnd, HINSTANCE hInst) {
 	hMainWindow = hWnd;
 	hInstance = hInst;
 	focus = false;
+
+	InitializeComponent();
 }
 
 
@@ -143,6 +145,28 @@ void Control::OpenItem(LPNMHDR lpnmHdr, LPNMLISTVIEW pnmLV) {
 	}
 
 	fileSystem->Open(list, pnmLV, label);
+}
+
+void Control::CopyFiles() {
+	if (focus) {
+		fileSystem->CopySelectedFiles(listRight, listLeft);
+		fileSystem->FindFile(listLeft, listLeft->path);
+	} else {
+		fileSystem->CopySelectedFiles(listLeft, listRight);
+		fileSystem->FindFile(listRight, listRight->path);
+	}
+}
+
+void Control::DeleteFiles() {
+	if (focus) {
+		fileSystem->DeleteSelectedFiles(listRight);
+		fileSystem->FindFile(listRight, listRight->path);
+		fileSystem->FindFile(listLeft, listLeft->path);
+	} else {
+		fileSystem->DeleteSelectedFiles(listLeft);
+		fileSystem->FindFile(listLeft, listLeft->path);
+		fileSystem->FindFile(listRight, listRight->path);
+	}
 }
 
 
