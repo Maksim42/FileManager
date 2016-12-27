@@ -16,6 +16,7 @@ public:
 	bool ParentDir(LPWSTR path);
 	bool CopySelectedFiles(ListViewControl *from, ListViewControl *to);
 	bool DeleteSelectedFiles(ListViewControl *from);
+	void SizeConverting(int size, LPWSTR sizeString);
 	BOOL InitListViewImageLists(ListViewControl * listView, int size, LPWSTR rootDir);
 };
 

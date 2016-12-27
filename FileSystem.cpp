@@ -25,7 +25,7 @@ bool FileSystem::FindFile(ListViewControl *list, LPWSTR dir)
 	HANDLE hFind;
 
 	hFind = FindFirstFile(rootDir, &FindFileData);
-	delete rootDir;
+	delete[] rootDir;
 
 	if (hFind == INVALID_HANDLE_VALUE) {
 		return false;
@@ -50,9 +50,13 @@ bool FileSystem::FindFile(ListViewControl *list, LPWSTR dir)
 			if ((FILE_ATTRIBUTE_DIRECTORY & GetFileAttributes(fullPath))
 				 != FILE_ATTRIBUTE_DIRECTORY) {
 				item[1] = L"File"; 
+
 				item[2] = new TCHAR[MAX_PATH];
+
 				int size = (FindFileData.nFileSizeHigh * (MAXWORD + 1)) + FindFileData.nFileSizeLow;
-				swprintf(item[2], MAX_PATH, L"%db", size);
+				SizeConverting(size, item[2]);
+				//swprintf(item[2], MAX_PATH, L"%db", size);
+
 				file = true;
 			} else {
 				item[1] = L"Directory";
@@ -60,7 +64,6 @@ bool FileSystem::FindFile(ListViewControl *list, LPWSTR dir)
 			}
 
 			item[0] = FindFileData.cFileName;
-
 			list->AddItem(item);
 
 			if (file) {
@@ -78,6 +81,25 @@ bool FileSystem::FindFile(ListViewControl *list, LPWSTR dir)
 	list->Refresh();
 
 	return true;
+}
+
+void FileSystem::SizeConverting(int size, LPWSTR sizeString) {
+	if (size - (size % 1000000000)) {
+		swprintf(sizeString, MAX_PATH, L"%d Gb", size / 1000000000);
+		return;
+	}
+
+	if (size - (size % 1000000)) {
+		swprintf(sizeString, MAX_PATH, L"%d Mb", size / 1000000);
+		return;
+	}
+
+	if (size - (size % 1000)) {
+		swprintf(sizeString, MAX_PATH, L"%d Kb", size / 1000);
+		return;
+	}
+
+	swprintf(sizeString, MAX_PATH, L"%d b", size);
 }
 
 bool FileSystem::Open(ListViewControl *list, LPNMLISTVIEW pnmLV, LabelControl *label) {
