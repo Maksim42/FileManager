@@ -15,6 +15,8 @@ ListViewControl::ListViewControl(HWND hWnd, HINSTANCE hInst, POINT position, int
 	LPWSTR columns[] = { L"Name", L"Type", L"Size" };
 	InitColumn(columns, 3);
 
+	sortingPatern = 0;
+
 	path = new TCHAR[MAX_PATH];
 	wcscpy_s(path, MAX_PATH, L"C:\\");
 }
@@ -131,12 +133,65 @@ void ListViewControl::GetItemText(int itemNum, LPWSTR text) {
 	ListView_GetItemText(hList, itemNum, 0, text, MAX_STR_BLOCKREASON);
 }
 
+void ListViewControl::Sorting(int columnIndex) {
+	columnIndex++;
+	/*LPWSTR buf = new TCHAR[MAX_STR_BLOCKREASON];
+	swprintf(buf, MAX_PATH, L"%d", columnIndex + 1);
+	MessageBox(0, buf, L"BreakComander", MB_OK | MB_ICONWARNING);
+	delete[] buf;*/
+	if (columnIndex == 1) {
+		if (abs(sortingPatern) == 1) {
+			sortingPatern = -sortingPatern;
+		} else {
+			sortingPatern = 1;
+		}
+
+		ColumnSorting();
+	}
+
+	
+}
+
+void ListViewControl::ColumnSorting() {
+	int column = abs(sortingPatern) - 1;
+
+	for (int i = 0; i < itemCount - 1; i++) {
+		if (wcscmp(listItems[0][i], L"..") == 0) {
+			continue;
+		}
+
+		int swapItem = i;
+		
+		for (int j = i + 1; j < itemCount; j++) {
+			if (sortingPatern > 0) {
+				if (wcscmp(listItems[column][swapItem], listItems[column][j]) > 0) {
+					swapItem = j;
+				}
+			} else {
+				if (wcscmp(listItems[column][swapItem], listItems[column][j]) < 0) {
+					swapItem = j;
+				}
+			}
+		}
+
+		Swap(i, swapItem);
+	}
+}
+
+void ListViewControl::Swap(int from, int to) {
+	for (int i = 0; i < columnCount; i++) {
+		LPWSTR temp = listItems[i][to];
+		listItems[i][to] = listItems[i][from];
+		listItems[i][from] = temp;
+	}
+}
+
 void ListViewControl::StartEdit() {
-	hEdit = ListView_GetEditControl(hList);
+	//hEdit = ListView_GetEditControl(hList);
 }
 
 void ListViewControl::StopEdit() {
-	int editNum = ListView_GetNextItem(hList, -1, LVNI_FOCUSED);
+	/*int editNum = ListView_GetNextItem(hList, -1, LVNI_FOCUSED);
 
 	LPWSTR newName = new TCHAR[255];
 	GetWindowText(hEdit, newName, sizeof(newName));
@@ -144,5 +199,5 @@ void ListViewControl::StopEdit() {
 	delete[] listItems[0][editNum];
 	listItems[0][editNum] = newName;
 
-	Refresh();
+	Refresh();*/
 }

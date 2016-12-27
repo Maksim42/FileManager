@@ -19,6 +19,7 @@ public:
 	void InitializeComponent();
 	void BeginEditHandler(LPNMHDR lpnmhdr);
 	void EndEditHandler(LPNMHDR lpnmhdr);
+	void ListColumnClick(LPNMHDR lpnmhdr, LPNMLISTVIEW pnmLV);
 	void RightComboBoxSelect();
 	void LeftComboBoxSelect();
 	void SetListFocus(LPNMHDR lpnmHdr);

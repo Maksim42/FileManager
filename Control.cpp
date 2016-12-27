@@ -88,6 +88,20 @@ void Control::EndEditHandler(LPNMHDR lpnmhdr) {
 	}
 }
 
+void Control::ListColumnClick(LPNMHDR lpnmhdr, LPNMLISTVIEW pnmLV) {
+	switch (lpnmhdr->idFrom)
+	{
+	case LeftListView:
+		listLeft->Sorting(pnmLV->iSubItem);
+		listLeft->Refresh();
+		break;
+	case RightListViev:
+		listRight->Sorting(pnmLV->iSubItem);
+		listRight->Refresh();
+		break;
+	}
+}
+
 void Control::LeftComboBoxSelect() {
 	LPWSTR newPath = comboLeft->GetSelected();
 
@@ -101,6 +115,7 @@ void Control::LeftComboBoxSelect() {
 		MessageBox(0, L"Error", L"BreakComander", MB_OK | MB_ICONWARNING);
 		fileSystem->FindFile(listLeft, oldPath);
 	}
+
 	delete[] oldPath;
 }
 
@@ -117,8 +132,8 @@ void Control::RightComboBoxSelect() {
 		MessageBox(0, L"Error", L"BreakComander", MB_OK | MB_ICONWARNING);
 		fileSystem->FindFile(listRight, oldPath);
 	}
-	delete[] oldPath;
 
+	delete[] oldPath;
 }
 
 void Control::SetListFocus(LPNMHDR lpnmHdr) {

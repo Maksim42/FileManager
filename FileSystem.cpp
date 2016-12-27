@@ -78,6 +78,8 @@ bool FileSystem::FindFile(ListViewControl *list, LPWSTR dir)
 		//InitListViewImageLists(list, i, rootDir);
 	}
 
+	list->sortingPatern = 0;
+	list->Sorting(0);
 	list->Refresh();
 
 	return true;

@@ -96,7 +96,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
-   hInst = hInstance; // Store instance handle in our global variable
+   hInst = hInstance;
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, (WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME)
 			   & ~WS_MAXIMIZEBOX, CW_USEDEFAULT, 0, 900, 600,
@@ -131,7 +131,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
-            // Parse the menu selections:
+
             switch (wmId)
             {
             case IDM_ABOUT:
@@ -182,6 +182,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case LVN_COLUMNCLICK:
 			//MessageBox(hWnd, L"Column Click", L"Click left", MB_OK | MB_ICONWARNING);
 			//pnmLV->iSubItem
+			control->ListColumnClick(lpnmHdr, pnmLV);
 			break;
 
 		case LVN_BEGINLABELEDIT:
