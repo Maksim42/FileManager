@@ -50,7 +50,6 @@ bool FileSystem::FindFile(ListViewControl *list, LPWSTR dir)
 			if ((FILE_ATTRIBUTE_DIRECTORY & GetFileAttributes(fullPath))
 				 != FILE_ATTRIBUTE_DIRECTORY) {
 				item[1] = L"File"; 
-
 				item[2] = new TCHAR[MAX_PATH];
 
 				int size = (FindFileData.nFileSizeHigh * (MAXWORD + 1)) + FindFileData.nFileSizeLow;

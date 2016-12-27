@@ -135,21 +135,16 @@ void ListViewControl::GetItemText(int itemNum, LPWSTR text) {
 
 void ListViewControl::Sorting(int columnIndex) {
 	columnIndex++;
-	/*LPWSTR buf = new TCHAR[MAX_STR_BLOCKREASON];
-	swprintf(buf, MAX_PATH, L"%d", columnIndex + 1);
-	MessageBox(0, buf, L"BreakComander", MB_OK | MB_ICONWARNING);
-	delete[] buf;*/
-	if (columnIndex == 1) {
-		if (abs(sortingPatern) == 1) {
+	
+	if (columnIndex < 3) {
+		if (abs(sortingPatern) == columnIndex) {
 			sortingPatern = -sortingPatern;
 		} else {
-			sortingPatern = 1;
+			sortingPatern = columnIndex;
 		}
 
 		ColumnSorting();
 	}
-
-	
 }
 
 void ListViewControl::ColumnSorting() {
